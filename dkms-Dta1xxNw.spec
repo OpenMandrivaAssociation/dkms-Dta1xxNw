@@ -1,6 +1,6 @@
 %define modname Dta1xxNw
 %define version 1.2.0.7
-%define release %mkrel 1
+%define release %mkrel 2
 %define modversion %{version}-%{release}
 
 Name:     dkms-%{modname}
@@ -16,7 +16,7 @@ Source0:  %{modname}.tar.gz
 Patch0:   Dta1xx-netdev_ops.patch
 Url:      http://www.dektec.com/downloads/Drivers.asp
 Group:    Development/Kernel
-Requires(post):  dkms
+Requires(post):  dkms dkms-Dta1xx
 Requires(preun): dkms
 Buildroot:  %{_tmppath}/%{modname}-%{version}-%{release}-buildroot
 BuildArch:  noarch
