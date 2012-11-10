@@ -1,0 +1,40 @@
+--- Source/Dta1xxNw.c.ori	2010-01-15 00:52:58.000000000 +0100
++++ Source/Dta1xxNw.c	2010-01-15 01:06:36.000000000 +0100
+@@ -257,6 +257,17 @@
+ 	return Dta1xxNwSetSpeed(lp, Speed);
+ }
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,29)
++static const struct net_device_ops Dta1xx_netdev_ops = {
++        .ndo_open               = Dta1xxNwOpen,
++        .ndo_stop               = Dta1xxNwClose,
++        .ndo_start_xmit         = Dta1xxNwStartXmit,
++        .ndo_set_multicast_list = Dta1xxNwSetMulticastList,
++        .ndo_get_stats          = Dta1xxNwGetStats,
++        .ndo_set_mac_address    = Dta1xxNwSetMacAddr,
++//	.ndo_tx_timeout		= Dta1xxNwTxTimeout,
++}; 
++#endif
+ //-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.- Dta1xxNwInitModule -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+ //
+ // Initialise the module. Registers the module. Scans the system for the available Dektec
+@@ -348,15 +359,18 @@
+ 		g_pNwDevices[g_NumNwDevices++] = lp;
+         
+ 		// Set callback routines
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,29)
+ 		pNwDev->open = &Dta1xxNwOpen;
+ 		pNwDev->hard_start_xmit = &Dta1xxNwStartXmit;
+ 		pNwDev->stop = &Dta1xxNwClose;
+ 		pNwDev->get_stats = &Dta1xxNwGetStats;
+ 		pNwDev->set_multicast_list = &Dta1xxNwSetMulticastList;
+ 		pNwDev->set_mac_address = &Dta1xxNwSetMacAddr;
+-		
+ 		//pNwDev->tx_timeout = Dta1xxNwTxTimeout;
+ 		//pNwDev->watchdog_timeo = TX_TIMEOUT;
++#else
++		pNwDev->netdev_ops = &Dta1xx_netdev_ops;
++#endif		
+ 		
+ 		SET_ETHTOOL_OPS(pNwDev, &EthToolOps);
+ 
