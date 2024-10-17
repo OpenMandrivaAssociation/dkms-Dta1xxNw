@@ -14,7 +14,7 @@ License:  GPLv2
 # which contains several drivers and some non free libraries
 Source0:  %{modname}.tar.gz
 Patch0:   Dta1xx-netdev_ops.patch
-Url:      http://www.dektec.com/downloads/Drivers.asp
+Url:      https://www.dektec.com/downloads/Drivers.asp
 Group:    Development/Kernel
 Requires(post):  dkms dkms-Dta1xx
 Requires(preun): dkms
